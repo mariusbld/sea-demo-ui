@@ -23,23 +23,27 @@ export const RootRoute: FC = () => {
         [connectWallet]
     );
 
-    const [params] = useSearchParams();
-    const { recipient, label } = useMemo(() => {
-        let recipient: PublicKey | undefined, label: string | undefined;
+    // const [params] = useSearchParams();
+    // const { recipient, label } = useMemo(() => {
+    //     let recipient: PublicKey | undefined, label: string | undefined;
 
-        const recipientParam = params.get('recipient');
-        const labelParam = params.get('label');
-        if (recipientParam && labelParam) {
-            try {
-                recipient = new PublicKey(recipientParam);
-                label = labelParam;
-            } catch (error) {
-                console.error(error);
-            }
-        }
+    //     const recipientParam = params.get('recipient');
+    //     const labelParam = params.get('label');
+    //     if (recipientParam && labelParam) {
+    //         try {
+    //             recipient = new PublicKey(recipientParam);
+    //             label = labelParam;
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
 
-        return { recipient, label };
-    }, [params]);
+    //     return { recipient, label };
+    // }, [params]);
+
+    const solletAlice = 'AVr2dcYjJKeAXDKEcNV51Pu9mUZRHT43vRVVJAkgYgsT';
+    const recipient = new PublicKey(solletAlice);
+    const label = 'nft-vending-machine';
 
     return (
         <ThemeProvider>
