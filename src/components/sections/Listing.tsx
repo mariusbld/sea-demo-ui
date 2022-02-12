@@ -53,7 +53,7 @@ export const Listing: FC<ListingProps> = ({id, name, url, onBuy}: ListingProps) 
                 {name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-                0.01 SOL ($1.04)
+                0.001 SOL ($0.09)
             </Typography>
         </CardContent>
         <CardActions>

@@ -22,7 +22,7 @@ export const RaffleRoute: FC = () => {
         setInterval(async () => {
             const resp = await fetch('https://phoria-demo.herokuapp.com/get-contestants');
             setCounter((await resp.json()).contestants.length); 
-        }, 1000);
+        }, 2000);
     }, [setCounter]);
 
     return (
