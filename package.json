@@ -10,8 +10,8 @@
     },
     "scripts": {
         "clean": "rm -rf dist .parcel-cache",
-        "build": "yarn clean && parcel build src/index.html",
-        "start": "yarn clean && parcel src/index.html",
+        "build": "yarn clean && parcel build src/index.html && echo '/* /index.html 200' | cat > dist/_redirects",
+        "start": "yarn clean && parcel src/index.html && echo '/* /index.html 200' | cat > dist/_redirects",
         "docs": "rm -rf docs && typedoc && cp .nojekyll docs/",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint": "eslint . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
