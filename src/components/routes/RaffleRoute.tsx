@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { PoweredBy } from '../sections/PoweredBy';
 import Button from '@mui/material/Button';
 import * as css from './RaffleRoute.module.pcss';
+import Typography from '@mui/material/Typography';
 
 export const RaffleRoute: FC = () => {
     const [counter, setCounter] = useState(0);
@@ -35,7 +36,7 @@ export const RaffleRoute: FC = () => {
                         <Button variant="contained" size="large" onClick={() => pickWinner()}>Pick Winner</Button>
                     </div>
                 ) : (
-                    <div className={css.winnerDeclared}>Winner is {winner}</div>
+                    <Typography gutterBottom variant="h2" component="div" sx={{textAlign: "center"}}>Winner is {winner.substring(0, 4) + "..."}</Typography>
                 )
             }
             <div className={css.footer}>
