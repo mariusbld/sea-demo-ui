@@ -26,7 +26,7 @@ export const WinnerRoute: FC = () => {
                         🎉 Congratulations 🎉
                     </Typography>
                     <Typography gutterBottom variant="h2" component="div" sx={{textAlign: "center"}}>
-                        You won 1 SOL!
+                        You won 0.1 SOL ($9)!
                     </Typography>
                 </Container>
             </div>
