@@ -6,6 +6,9 @@ import { PoweredBy } from '../sections/PoweredBy';
 import { Progress } from '../sections/Progress';
 import * as css from './TryAgainRoute.module.pcss';
 
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+
 export const TryAgainRoute: FC = () => {
     const { reset } = usePayment();
 
@@ -16,7 +19,14 @@ export const TryAgainRoute: FC = () => {
                 <TransactionsLink />
             </div>
             <div className={css.main}>
-                Sorry. You did not win the raffle.  Better luck next time!
+                <Container>
+                    <Typography variant="h2" component="div" sx={{textAlign: "center"}}>
+                        🐶 You did not win the raffle 🐶
+                    </Typography>
+                    <Typography gutterBottom variant="h2" component="div" sx={{textAlign: "center"}}>
+                        Better luck next time!
+                    </Typography>
+                </Container>
             </div>
             <div className={css.footer}>
                 <PoweredBy />

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import { useMediaQuery } from 'react-responsive';
 import { FullscreenButton } from '../buttons/FullscreenButton';
@@ -41,29 +41,37 @@ const allAssets: NftAsset[] = [
     { id: "sportsarni6", name: "Sports Arni #6", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
     { id: "sportsarni7", name: "Sports Arni #7", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
     { id: "sportsarni8", name: "Sports Arni #8", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni9", name: "Sports Arni #9", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni10", name: "Sports Arni #10", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" }
+    { id: "sportsarni9", name: "Sports Arni #9", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" }
 ];
 
+const API_URL = process.env.API_URL || 'https://phoria-demo.herokuapp.com';
+const GET_RAFFLE_URL = `${API_URL}/get-raffle`;
+const SHIBA_PRICE = 0.001;
+
 export const Marketplace: FC = () => {
-    const phone = useMediaQuery({ query: '(max-width: 767px)' });
-
-    const { setAmount, generate, setMessage, setMemo, setRaffleRef } = usePayment();
-    const handleBuy = (id: string) => {
-        setAmount(new BigNumber(0.01));
-        setMessage(`Buy your shiba ${id}`);
-
-        let getRaffleEndpoint = 'https://phoria-demo.herokuapp.com/get-raffle';
-        fetch(getRaffleEndpoint)
+    const { setAmount, generate, setMessage, setRaffleRef } = usePayment();
+    
+    useEffect(() => {
+        fetch(GET_RAFFLE_URL)
             .then(res => res.json())
-            .then(json => {
-                setRaffleRef(new PublicKey(json.raffleId));
+            .then(obj => {
+                if (!obj.raffleId || obj.raffleId === '') {
+                    console.error('Missing raffle ID');
+                    return;
+                }
+                setRaffleRef(new PublicKey(obj.raffleId));
+                console.log(`raffle id: ${obj.raffleId}`);
             })
             .catch(err => console.log(err));
+    }, [setRaffleRef]);
 
+    const handleBuy = (id: string) => {
+        setAmount(new BigNumber(SHIBA_PRICE));
+        setMessage(`shiba ${id}`);
         generate();
     };
 
+    const phone = useMediaQuery({ query: '(max-width: 767px)' });
     return phone ? (
         <div className={css.root}>
             <div className={css.top}>
@@ -97,15 +105,6 @@ export const Marketplace: FC = () => {
                     </Container>
                 </div>
                 <PoweredBy />
-            </div>
-            <div className={css.side}>
-                <div className={css.summary}>
-                    <Summary />
-                    <GenerateButton />
-                </div>
-                <div className={css.bottom}>
-                    <TransactionsLink />
-                </div>
             </div>
         </div>
     );
