@@ -20,6 +20,8 @@ export interface PaymentProviderProps {
     children: ReactNode;
 }
 
+const API_URL = process.env.API_URL || 'https://phoria-demo.herokuapp.com';
+
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
     const { recipient, splToken, label, requiredConfirmations, connectWallet } = useConfig();
@@ -32,21 +34,20 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [raffleRef, setRaffleRef] = useState<PublicKey>();
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
-    const [winnerNotDetermined, setWinnerNotDetermined] = useState(Boolean);
+    const [winnerPending, setWinnerPending] = useState<boolean>(false);
     const [confirmations, setConfirmations] = useState<Confirmations>(0);
+    const [signerWallet, setSignerWallet] = useState<string>();
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
     const url = useMemo(
         () => {
-            
             let refArr: PublicKey | PublicKey[] | undefined;
             if (reference && raffleRef) {
                 refArr = [reference, raffleRef];
             } else {
                 refArr = reference;
             }
-            console.log(`URL Changed: raffleRef=${raffleRef} refArr=${refArr}`);
             // TODO(marius): use raffleRef
             return encodeURL({
                 recipient,
@@ -68,7 +69,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setRaffleRef(undefined);
         setReference(undefined);
         setSignature(undefined);
-        setWinnerNotDetermined(false)
+        setWinnerPending(false);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
         navigate('/new', { replace: true });
@@ -193,27 +194,28 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
     // When the payment has been finalized, check to see if customer won raffle
     useEffect(() => {
-        if (!(status === PaymentStatus.Finalized && signature && winnerNotDetermined)) return;
+        if (!(status === PaymentStatus.Finalized && signature && winnerPending)) return;
         let changed = false;
 
         const interval = setInterval(async () => {
             try {
-                const txs = await connection.getParsedTransactions([signature]);
-                const signers = txs.map(tx => tx?.transaction.message.accountKeys.find(key => key.signer));
-                const signerWallets = signers.map(signer => signer?.pubkey.toString());
-
-                let isWinnerEndpoint = 'https://phoria-demo.herokuapp.com/is-winner?wallet=' + signerWallets;
-                fetch(isWinnerEndpoint)
+                const isWinnerUrl = `${API_URL}/is-winner?wallet=${signerWallet}`;
+                fetch(isWinnerUrl)
                     .then(res => res.json())
                     .then(out => {
-                        if (!out.isPending) {
-                            setWinnerNotDetermined(false)
-                            clearInterval(interval);
-                            if (out.winner) {
-                                navigate('/winner', { replace: true });
-                            } else {
-                                navigate('/tryagain', { replace: true });                     
-                            }
+                        if (out.isPending) {
+                            return;
+                        }
+                        if (changed) {
+                            return;
+                        }
+
+                        setWinnerPending(false);
+                        clearInterval(interval);
+                        if (out.winner) {
+                            navigate('/winner', { replace: true });
+                        } else {
+                            navigate('/tryagain', { replace: true });                     
                         }
                     })
                 .catch(err => console.log(err));
@@ -228,7 +230,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, signature, winnerNotDetermined, navigate]);
+    }, [status, signature, winnerPending, navigate, connection, signerWallet]);
 
     // When the status is valid, poll for confirmations until the transaction is finalized
     useEffect(() => {
@@ -245,10 +247,20 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 if (!changed) {
                     setConfirmations((status.confirmations || 0) as Confirmations);
 
+                    const txs = await connection.getParsedTransactions([signature]);
+                    const signers = txs.map(tx => tx?.transaction.message.accountKeys.find(key => key.signer));
+                    const signerWallets = signers.map(signer => signer?.pubkey.toString());
+                    
+                    if (signerWallets.length !== 1) {
+                        console.error(`found multiple signer wallets: ${signerWallets}`);
+                    } else {
+                        setSignerWallet(signerWallets[0]);
+                    }
+
                     if (status.confirmationStatus === 'finalized') {
                         clearInterval(interval);
                         setStatus(PaymentStatus.Finalized);
-                        setWinnerNotDetermined(true);
+                        setWinnerPending(true);
                     }
                 }
                 
@@ -262,7 +274,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, signature, winnerNotDetermined, connection]);
+    }, [status, signature, winnerPending, connection]);
     
     return (
         <PaymentContext.Provider
