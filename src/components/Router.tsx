@@ -6,6 +6,7 @@ import { Marketplace } from './routes/Marketplace';
 import { WinnerRoute } from './routes/WinnerRoute';
 import { TryAgainRoute } from './routes/TryAgainRoute';
 import { PendingRoute } from './routes/PendingRoute';
+import { RaffleRoute } from './routes/RaffleRoute';
 import { RootRoute } from './routes/RootRoute';
 import { TransactionsRoute } from './routes/TransactionsRoute';
 
@@ -16,6 +17,7 @@ export const Router: FC = () => {
                 <Route element={<RootRoute />}>
                     <Route index element={<IndexRedirect />} />
                     <Route path="new" element={<Marketplace />} />
+                    <Route path="raffle" element={<RaffleRoute />} />
                     <Route path="pending" element={<PendingRoute />} />
                     <Route path="confirmed" element={<ConfirmedRoute />} />
                     <Route path="transactions" element={<TransactionsRoute />} />
