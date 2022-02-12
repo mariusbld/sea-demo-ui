@@ -33,16 +33,12 @@ interface NftAsset {
 }
 
 const allAssets: NftAsset[] = [
-    { id: "sportsarni1", name: "Sports Arni #1", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni2", name: "Sports Arni #2", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni3", name: "Sports Arni #3", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni4", name: "Sports Arni #4", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni5", name: "Sports Arni #5", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni6", name: "Sports Arni #6", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni7", name: "Sports Arni #7", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni8", name: "Sports Arni #8", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni9", name: "Sports Arni #9", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" },
-    { id: "sportsarni10", name: "Sports Arni #10", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small.jpeg" }
+    { id: "sportsarni1", name: "Sports Arni #1", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small1.jpg" },
+    { id: "sportsarni2", name: "Sports Arni #2", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small2.jpg" },
+    { id: "sportsarni3", name: "Sports Arni #3", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small3.jpg" },
+    { id: "sportsarni4", name: "Sports Arni #4", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small4.jpg" },
+    { id: "sportsarni5", name: "Sports Arni #5", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small5.jpg" },
+    { id: "sportsarni6", name: "Sports Arni #6", url: "https://htang-tf-bucket.s3.us-east-2.amazonaws.com/sports_arni_small6.jpg" }
 ];
 
 export const Marketplace: FC = () => {
